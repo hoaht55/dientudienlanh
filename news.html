@@ -1,0 +1,104 @@
+﻿
+<!DOCTYPE HTML>
+<html>
+<head>
+	 <meta charset="utf-8">
+    <title>Tin tức</title> 
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" /> 
+	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>	
+	<script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
+	
+	<!--	<script type="text/javascript" src="cordova.js"></script>-->
+</head>
+<body>
+	<!-- page home-->
+    <div data-role="page" id="home">
+        <div data-role="header" data-postion="fixed">
+			<a href="home.html" data-role="button" data-icon="home"  data-theme="a" data-inline="true">Home</a>
+            <h1>
+				Tin tức
+			</h1>
+           
+        </div> <!--end header -->
+		
+        <div data-role="content">
+            <ul data-role="listview" data-inset="true"  id="result-restaurant">       
+            </ul>
+			<script>
+			    $(function () {
+				var serviceUrl = 'http://203.113.130.218:50080/dtdl/api/tin_tuc.php?callback=?';
+				var dataStore = {};
+				$.ajax({
+					url: serviceUrl,
+					crossDomain: true,
+					dataType: "jsonp",
+					contentType: "application/json; charset=utf-8",
+					jsonpCallback:'jsonGastro',
+					})
+					.success
+					(function(data) {
+						$.each(data, function(i, item){
+							//if (item.parent_id == 15 ) {
+							// Stash the items by id for later retrieval.           
+								dataStore[item.id] = item;
+								var $row = $(
+								'<li>' +
+								'<a href="#details">' +
+							//	'<img src="http://203.113.130.218:50080/dtdl/' + item.image + '" width="135" height="138" />' + 
+								'<h2>' + item.title + '</h2>' +
+								//'<p>' + item.introtext + '</p>' +
+								'</a>' +
+								'</li>'
+								);//}
+							$('#result-restaurant').append($row);
+
+							$($row)
+							.jqmData('item-id', item.id)
+							.click(function(e) {
+					var item = dataStore[$(this).jqmData('item-id')];
+					$('#details #title').html(item.title);
+					$('#details #fulltext').html(item.fulltext);
+				//	$('#details #price').html(item.price);
+			  //     $('#details #image').attr('http://203.113.130.218:50080/dtdl/', item.image);
+			});
+
+
+
+
+				$('#result-restaurant').listview('refresh');
+			});
+			
+				   
+		
+			
+			
+			
+					
+	  });
+		  
+			});
+		
+			</script>
+        </div>
+        
+    </div>
+
+	<!-- page details-->
+	<div data-role="page" id="details" data-add-back-btn="true">
+		<div data-role="header">
+			<a href="#home" data-role="button" data-icon="back"  data-theme="a" data-inline="true">Back</a>
+			<h1 id="title"></h1>
+		</div>
+		<div data-role="content">       
+		<!--	<img id="image" /> -->
+			<div id="fulltext"></div>
+		<!--	<div id="price"></div>
+		
+		<!--	<a id="detailsLink" href="">Enlace</a> -->
+		</div>
+	
+	</div> 
+		
+</body>
+
+</html>
